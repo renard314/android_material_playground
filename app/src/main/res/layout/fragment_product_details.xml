@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.v7.widget.Toolbar
+        app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        android:id="@+id/my_awesome_toolbar"
+        android:layout_height="96dp"
+        android:layout_width="match_parent"
+        android:minHeight="?attr/actionBarSize"
+        android:background="?attr/colorPrimary">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                tools:text="Perrier Pink Grapefruit Sparkling Mineral Water"
+                android:id="@+id/title_text_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:textAppearance="@style/TextAppearance.AppCompat.Widget.ActionBar.Title" />
+            <TextView
+                android:id="@+id/measure_text_view"
+                tools:text = "750ml"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:textAppearance="@style/TextAppearance.AppCompat.Widget.ActionBar.Subtitle" />
+
+        </LinearLayout>
+    </android.support.v7.widget.Toolbar>
+
+    <ImageView
+        android:background="@android:color/white"
+        android:layout_below="@+id/my_awesome_toolbar"
+        android:id="@+id/product_detail_image_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</RelativeLayout>

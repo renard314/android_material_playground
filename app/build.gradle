@@ -1,0 +1,39 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 22
+    buildToolsVersion "21.1.2"
+
+    packagingOptions {
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/NOTICE'
+    }
+
+    defaultConfig {
+        applicationId "codingpractice.renard314.com.products"
+        minSdkVersion 11
+        targetSdkVersion 22
+        versionCode 1
+        versionName "1.0"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile 'com.android.support:appcompat-v7:22.0.0'
+    compile 'com.android.support:cardview-v7:22.0.0'
+    compile 'com.squareup.picasso:picasso:2.5.2'
+    compile 'com.fasterxml.jackson.core:jackson-core:2.5.2'
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.5.2'
+    compile 'com.android.support:recyclerview-v7:22.0.0'
+    compile 'de.greenrobot:eventbus:2.4.0'
+    compile 'com.jakewharton:butterknife:6.1.0'
+    compile 'com.github.chrisbanes.photoview:library:1.2.3'
+    compile 'com.github.ksoichiro:android-observablescrollview:1.5.0'
+}

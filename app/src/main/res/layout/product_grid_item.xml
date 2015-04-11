@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<codingpractice.renard314.com.products.ui.ProductLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <ImageView
+            android:padding="8dp"
+            android:background="@android:color/white"
+            tools:src="@drawable/example_product"
+            android:scaleType="fitCenter"
+            android:id="@+id/product_image_view"
+            android:layout_alignParentTop="true"
+            android:layout_width="match_parent"
+            android:layout_above="@+id/text_container"
+            android:layout_height="wrap_content" />
+
+        <RelativeLayout
+            android:layout_alignParentBottom="true"
+            android:background="@color/colorAccent"
+            android:id="@+id/text_container"
+            android:layout_width="match_parent"
+            android:minHeight="68dp"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_marginTop="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="8dp"
+                tools:text="Perrier Pink Grapefruit Sparkling Mineral Water"
+                android:singleLine="true"
+                android:ellipsize="end"
+                android:id="@+id/price_text_view"
+                android:textSize="16sp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:layout_marginBottom="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="8dp"
+                tools:text="3.1"
+                android:layout_below="@+id/price_text_view"
+                android:singleLine="true"
+                android:ellipsize="end"
+                android:id="@+id/title_text_view"
+                android:textSize="16sp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </RelativeLayout>
+    </RelativeLayout>
+
+</codingpractice.renard314.com.products.ui.ProductLayout>
