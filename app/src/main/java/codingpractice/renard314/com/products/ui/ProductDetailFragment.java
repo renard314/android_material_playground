@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.util.TypedValue;
@@ -28,9 +29,13 @@ import com.nineoldandroids.view.ViewPropertyAnimator;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
+import java.text.NumberFormat;
+import java.util.Locale;
+
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import codingpractice.renard314.com.products.R;
+import codingpractice.renard314.com.products.model.generated.Image;
 import codingpractice.renard314.com.products.model.generated.Product;
 import uk.co.senab.photoview.PhotoViewAttacher;
 
@@ -44,8 +49,7 @@ public class ProductDetailFragment extends Fragment implements ObservableScrollV
     final static String TAG = ProductDetailFragment.class.getSimpleName();
     private static final String ARG_PRODUCT = "arg_product";
 
-    private static final float MAX_TEXT_SCALE_DELTA = 0.3f;
-    private static final boolean TOOLBAR_IS_STICKY = true;
+    private static final float MAX_TEXT_SCALE_DELTA = 0.15f;
 
     @InjectView(R.id.my_awesome_toolbar)
     Toolbar mToolbar;
@@ -59,15 +63,16 @@ public class ProductDetailFragment extends Fragment implements ObservableScrollV
     ObservableScrollView mScrollView;
     @InjectView(R.id.title_text_view)
     TextView mTitleView;
+    @InjectView(R.id.measure_text_view)
+    TextView mMeasureView;
+    @InjectView(R.id.price_text_view)
+    TextView mPriceView;
+
+
 
     @InjectView(R.id.description_text_view)
     TextView mDescriptionTextView;
 
-//    @InjectView(R.id.measure_text_view)
- //   TextView mMeasureView;
-
-//    @InjectView(R.id.title_container)
- //   View mTitleContainer;
 
     @InjectView(R.id.fab)
     View mFab;
@@ -79,16 +84,8 @@ public class ProductDetailFragment extends Fragment implements ObservableScrollV
     private boolean mFabIsShown;
 
 
-    //?attr/colorPrimary
-
     private int getActionBarSize() {
-        TypedValue typedValue = new TypedValue();
-        int[] textSizeAttr = new int[]{R.attr.actionBarSize};
-        int indexOfAttrTextSize = 0;
-        TypedArray a = getActivity().obtainStyledAttributes(typedValue.data, textSizeAttr);
-        int actionBarSize = a.getDimensionPixelSize(indexOfAttrTextSize, -1);
-        a.recycle();
-        return actionBarSize;
+        return (int) getResources().getDimension(R.dimen.actionBarSize);
     }
 
     @Nullable
@@ -100,6 +97,7 @@ public class ProductDetailFragment extends Fragment implements ObservableScrollV
         activity.setSupportActionBar(mToolbar);
         activity.getSupportActionBar().setHomeButtonEnabled(true);
         activity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        ViewCompat.setElevation(mToolbar,4f);
 
         final Product product = getArguments().getParcelable(ARG_PRODUCT);
 
@@ -108,19 +106,20 @@ public class ProductDetailFragment extends Fragment implements ObservableScrollV
         mActionBarSize = getActionBarSize();
         mToolbarColor = getResources().getColor(R.color.colorPrimary);
 
-        if (!TOOLBAR_IS_STICKY) {
-            mToolbar.setBackgroundColor(Color.TRANSPARENT);
-        }
         mToolbar.setTitle(null);
         mScrollView.setScrollViewCallbacks(this);
         mTitleView.setText(product.title);
-        //mMeasureView.setText(product.measure.wt_or_vol);
+        mMeasureView.setText(product.measure.wt_or_vol);
         mDescriptionTextView.setText(product.desc);
+        //product information should really contain currency information and amount should not be in float either
+        //this is a demo so displaying as $ is fine.
+        NumberFormat format = NumberFormat.getCurrencyInstance(Locale.US);
+        mPriceView.setText(format.format(product.pricing.price));
 
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getActivity(), "FAB is clicked", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "Item added to cart.", Toast.LENGTH_SHORT).show();
             }
         });
         mFabMargin = getResources().getDimensionPixelSize(R.dimen.margin_standard);
@@ -131,26 +130,32 @@ public class ProductDetailFragment extends Fragment implements ObservableScrollV
         ScrollUtils.addOnGlobalLayoutListener(mScrollView, new Runnable() {
             @Override
             public void run() {
-                //mScrollView.scrollTo(0, mFlexibleSpaceImageHeight - mActionBarSize);
-
-                // If you'd like to start from scrollY == 0, don't write like this:
-                //mScrollView.scrollTo(0, 0);
-                // The initial scrollY is 0, so it won't invoke onScrollChanged().
-                // To do this, use the following:
-                onScrollChanged(0, false, false);
-
-                // You can also achieve it with the following codes.
-                // This causes scroll change from 1 to 0.
-                //mScrollView.scrollTo(0, 1);
-                //mScrollView.scrollTo(0, 0);
+                //mScrollView.scrollTo(0, mFlexibleSpaceImageHeight);
+                //onScrollChanged(0, false, false);
+                mScrollView.scrollTo(0, 1);
+                mScrollView.scrollTo(0, 0);
             }
         });
 
-        startLoadingImage(mImageView,product.img.name);
-        //if(product.images.length>1) {
-         //   startLoadingImage(mSecondImageView, product.images[1].name);
-       // }
+        startLoadingImage(mImageView, product.img.name);
+        String secondaryImage = findSecondaryImageThatIsDifferentToMainImage(product);
+        if(secondaryImage!=null) {
+            startLoadingImage(mSecondImageView, secondaryImage);
+        } else {
+            mSecondImageView.setVisibility(View.INVISIBLE);
+        }
         return view;
+    }
+
+    @Nullable
+    private String findSecondaryImageThatIsDifferentToMainImage(Product product) {
+        for(Image second : product.images){
+            if(second.position!=product.img.position) {
+                return second.name;
+            }
+        }
+
+        return null;
     }
 
     private void startLoadingImage(final ImageView imageView, final String name) {
@@ -179,11 +184,22 @@ public class ProductDetailFragment extends Fragment implements ObservableScrollV
 
     private void loadImage(int width, int height, final ImageView imageView, String name) {
 
+        Callback callbacks = new Callback() {
+            @Override
+            public void onSuccess() {
+                Toast.makeText(getActivity(),"SUCCESS",Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onError() {
+                Toast.makeText(getActivity(),"ERROR",Toast.LENGTH_LONG).show();
+            }
+        };
         Picasso.with(getActivity().getApplicationContext())
                 .load("http://media.redmart.com/newmedia/200p" + name)
                 .resize(width, height)
                 .centerInside()
-                .into(imageView);
+                .into(imageView, callbacks);
     }
 
 
@@ -214,12 +230,9 @@ public class ProductDetailFragment extends Fragment implements ObservableScrollV
         ViewHelper.setScaleY(mTitleView, scale);
 
         // Translate title text
-        int maxTitleTranslationY = (int) (mFlexibleSpaceImageHeight +mActionBarSize- mTitleView.getHeight() * scale);
-        int titleTranslationY = maxTitleTranslationY - scrollY;
-        if (TOOLBAR_IS_STICKY) {
-            titleTranslationY = Math.max(0, titleTranslationY);
-        }
-        ViewHelper.setTranslationY(mTitleView, titleTranslationY);
+        int titleTranslationY = mFlexibleSpaceImageHeight - scrollY;
+        titleTranslationY = Math.max(0, titleTranslationY);
+        ViewHelper.setTranslationY(mToolbar, titleTranslationY);
 
         // Translate FAB
         int maxFabTranslationY = mFlexibleSpaceImageHeight - mFab.getHeight() / 2;
@@ -227,17 +240,8 @@ public class ProductDetailFragment extends Fragment implements ObservableScrollV
                 -scrollY + mFlexibleSpaceImageHeight - mFab.getHeight() / 2,
                 mActionBarSize - mFab.getHeight() / 2,
                 maxFabTranslationY);
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
-            // On pre-honeycomb, ViewHelper.setTranslationX/Y does not set margin,
-            // which causes FAB's OnClickListener not working.
-            FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) mFab.getLayoutParams();
-            lp.leftMargin = mOverlayView.getWidth() - mFabMargin - mFab.getWidth();
-            lp.topMargin = (int) fabTranslationY;
-            mFab.requestLayout();
-        } else {
-            ViewHelper.setTranslationX(mFab, mOverlayView.getWidth() - mFabMargin - mFab.getWidth());
-            ViewHelper.setTranslationY(mFab, fabTranslationY);
-        }
+        //ViewHelper.setTranslationX(mFab, mOverlayView.getWidth()  -mFabMargin - mFab.getWidth());
+        ViewHelper.setTranslationY(mFab, fabTranslationY);
 
         // Show/hide FAB
         if (fabTranslationY < mFlexibleSpaceShowFabOffset) {
@@ -246,23 +250,7 @@ public class ProductDetailFragment extends Fragment implements ObservableScrollV
             showFab();
         }
 
-        if (TOOLBAR_IS_STICKY) {
-            // Change alpha of toolbar background
-            /*
-            if (-scrollY + mFlexibleSpaceImageHeight <= mActionBarSize) {
-                mToolbar.setBackgroundColor(ScrollUtils.getColorWithAlpha(1, mToolbarColor));
-            } else {
-                mToolbar.setBackgroundColor(ScrollUtils.getColorWithAlpha(0, mToolbarColor));
-            }
-            */
-        } else {
-            // Translate Toolbar
-            if (scrollY < mFlexibleSpaceImageHeight) {
-                ViewHelper.setTranslationY(mToolbar, 0);
-            } else {
-                ViewHelper.setTranslationY(mToolbar, -scrollY);
-            }
-        }
+
     }
 
     @Override

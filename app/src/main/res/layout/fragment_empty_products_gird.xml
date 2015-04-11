@@ -9,4 +9,5 @@
         android:id="@+id/editText"
         android:layout_gravity="center_horizontal"
         android:text="Hello" />
+
 </LinearLayout>
