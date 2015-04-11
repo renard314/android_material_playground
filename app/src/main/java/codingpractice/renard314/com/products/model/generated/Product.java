@@ -50,7 +50,7 @@ public final class Product implements Parcelable {
         attributes = null;
         categories = null;
         images = (Image[]) in.readArray(Image.class.getClassLoader());
-        promotions = (Promotion[]) in.readArray(Promotion.class.getClassLoader());
+        promotions = null;
         types = in.createIntArray();
 
         desc = in.readString();
@@ -73,7 +73,6 @@ public final class Product implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeArray(images);
-        dest.writeArray(promotions);
         dest.writeIntArray(types);
         dest.writeString(desc);
         dest.writeValue(details);

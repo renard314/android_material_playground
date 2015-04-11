@@ -11,7 +11,7 @@ android {
 
     defaultConfig {
         applicationId "codingpractice.renard314.com.products"
-        minSdkVersion 11
+        minSdkVersion 14
         targetSdkVersion 22
         versionCode 1
         versionName "1.0"
@@ -36,4 +36,6 @@ dependencies {
     compile 'com.jakewharton:butterknife:6.1.0'
     compile 'com.github.chrisbanes.photoview:library:1.2.3'
     compile 'com.github.ksoichiro:android-observablescrollview:1.5.0'
+    compile 'com.nineoldandroids:library:2.4.0'
+    compile 'com.github.navasmdc:MaterialDesign:1.+@aar'
 }
