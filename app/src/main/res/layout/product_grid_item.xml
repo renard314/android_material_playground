@@ -5,18 +5,39 @@
     android:layout_height="match_parent">
 
     <RelativeLayout
+        android:background="@android:color/white"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
         <ImageView
             android:padding="8dp"
-            android:background="@android:color/white"
             tools:src="@drawable/example_product"
             android:scaleType="fitCenter"
             android:id="@+id/product_image_view"
             android:layout_alignParentTop="true"
             android:layout_width="match_parent"
-            android:layout_above="@+id/text_container"
+            android:layout_above="@+id/price_text_view"
             android:layout_height="wrap_content" />
+        <TextView
+            tools:text="$10.00"
+            android:paddingLeft="@dimen/margin_standard"
+            android:layout_above="@+id/text_container"
+            android:id="@+id/price_text_view"
+            android:textStyle="bold"
+            android:textSize="24sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <TextView
+            tools:text="740ml"
+            android:layout_alignBaseline="@+id/price_text_view"
+            android:layout_toRightOf="@+id/price_text_view"
+            android:paddingLeft="@dimen/margin_standard"
+            android:layout_above="@+id/text_container"
+            android:id="@+id/measure_text_view"
+            android:textSize="16sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
 
         <RelativeLayout
             android:layout_alignParentBottom="true"
@@ -26,30 +47,25 @@
             android:minHeight="68dp"
             android:layout_height="wrap_content">
 
-            <TextView
-                android:layout_marginTop="16dp"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="8dp"
-                tools:text="Perrier Pink Grapefruit Sparkling Mineral Water"
-                android:singleLine="true"
-                android:ellipsize="end"
-                android:id="@+id/price_text_view"
-                android:textSize="16sp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+            <LinearLayout
+                android:id="@+id/heading_container"
+                android:orientation="vertical"
+                android:layout_marginLeft="@dimen/margin_standard"
+                android:layout_marginRight="@dimen/margin_standard"
+                android:layout_centerVertical="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
 
-            <TextView
-                android:layout_marginBottom="16dp"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="8dp"
-                tools:text="3.1"
-                android:layout_below="@+id/price_text_view"
-                android:singleLine="true"
-                android:ellipsize="end"
-                android:id="@+id/title_text_view"
-                android:textSize="16sp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                <TextView
+                    tools:text="Perrier Pink Grapefruit Sparkling Mineral Water"
+                    android:lines="2"
+                    android:ellipsize="end"
+                    android:id="@+id/title_text_view"
+                    android:textSize="16sp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
 
         </RelativeLayout>
     </RelativeLayout>

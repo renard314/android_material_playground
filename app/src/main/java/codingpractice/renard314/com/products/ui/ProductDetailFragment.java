@@ -142,7 +142,7 @@ public class ProductDetailFragment extends Fragment implements ObservableScrollV
         if(secondaryImage!=null) {
             startLoadingImage(mSecondImageView, secondaryImage);
         } else {
-            mSecondImageView.setVisibility(View.INVISIBLE);
+            mSecondImageView.setVisibility(View.GONE);
         }
         return view;
     }
@@ -168,7 +168,6 @@ public class ProductDetailFragment extends Fragment implements ObservableScrollV
             public void onGlobalLayout() {
                 final int width = imageView.getWidth();
                 final int height = imageView.getHeight();
-                Log.i(TAG, "loading image with " + width + " " + height);
 
                 loadImage(width, height, imageView, name);
 
@@ -187,12 +186,11 @@ public class ProductDetailFragment extends Fragment implements ObservableScrollV
         Callback callbacks = new Callback() {
             @Override
             public void onSuccess() {
-                Toast.makeText(getActivity(),"SUCCESS",Toast.LENGTH_LONG).show();
             }
 
             @Override
             public void onError() {
-                Toast.makeText(getActivity(),"ERROR",Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(),"ERROR loading image",Toast.LENGTH_LONG).show();
             }
         };
         Picasso.with(getActivity().getApplicationContext())
@@ -223,11 +221,13 @@ public class ProductDetailFragment extends Fragment implements ObservableScrollV
         ViewHelper.setAlpha(mOverlayView, ScrollUtils.getFloat((float) scrollY / flexibleRange, 0, 1));
 
         // Scale title text
+        /*
         float scale = 1 + ScrollUtils.getFloat((flexibleRange - scrollY) / flexibleRange, 0, MAX_TEXT_SCALE_DELTA);
         ViewHelper.setPivotX(mTitleView, 0);
         ViewHelper.setPivotY(mTitleView, 0);
         ViewHelper.setScaleX(mTitleView, scale);
         ViewHelper.setScaleY(mTitleView, scale);
+        */
 
         // Translate title text
         int titleTranslationY = mFlexibleSpaceImageHeight - scrollY;

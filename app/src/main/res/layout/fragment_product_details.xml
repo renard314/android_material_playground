@@ -32,10 +32,8 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
             <View
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/actionBarSize"
-                android:background="@android:color/transparent" />
-            <View
+                android:layout_marginTop="@dimen/actionBarSize"
+
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/flexible_space_image_height"
                 android:background="@android:color/transparent"
@@ -59,6 +57,15 @@
                 android:layout_height="@dimen/flexible_space_image_height"
                 android:scaleType="fitCenter"
                 tools:src="@drawable/example_product" />
+            <TextView
+                android:padding="@dimen/margin_standard"
+                android:textSize = "24sp"
+                android:textStyle = "bold"
+                android:text="This space can be used for not so important actions. Place Promos, Sign up button, Delivery Info, Cart or Support UI here"
+                android:layout_width="match_parent"
+                android:layout_height="480dp"
+                />
+
         </LinearLayout>
     </com.github.ksoichiro.android.observablescrollview.ObservableScrollView>
 
@@ -116,6 +123,7 @@
     </LinearLayout>
 
     <com.gc.materialdesign.views.ButtonFloat
+        android:layout_marginRight="@dimen/margin_standard"
         android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
