@@ -10,6 +10,18 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * Created by renard on 11/04/15.
  */
 public final class Inventory implements Parcelable {
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<Inventory> CREATOR = new Parcelable.Creator<Inventory>() {
+        @Override
+        public Inventory createFromParcel(Parcel in) {
+            return new Inventory(in);
+        }
+
+        @Override
+        public Inventory[] newArray(int size) {
+            return new Inventory[size];
+        }
+    };
     public final long max_sale_qty;
     public final long stock_status;
     public final long qty_in_carts;
@@ -46,17 +58,4 @@ public final class Inventory implements Parcelable {
         dest.writeLong(qty_in_stock);
         dest.writeLong(__v);
     }
-
-    @SuppressWarnings("unused")
-    public static final Parcelable.Creator<Inventory> CREATOR = new Parcelable.Creator<Inventory>() {
-        @Override
-        public Inventory createFromParcel(Parcel in) {
-            return new Inventory(in);
-        }
-
-        @Override
-        public Inventory[] newArray(int size) {
-            return new Inventory[size];
-        }
-    };
 }

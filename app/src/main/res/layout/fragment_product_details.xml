@@ -61,9 +61,9 @@
                 android:padding="@dimen/margin_standard"
                 android:textSize = "24sp"
                 android:textStyle = "bold"
-                android:text="This space can be used for not so important actions. Place Promos, Sign up button, Delivery Info, Cart or Support UI here"
+                android:text="@string/placeholder"
                 android:layout_width="match_parent"
-                android:layout_height="480dp"
+                android:layout_height="800dp"
                 />
 
         </LinearLayout>
@@ -128,7 +128,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="right|top"
-        android:background="@color/colorAccent"
+        android:background="@color/colorPrimary"
         app:animate="false"
         app:iconDrawable="@drawable/ic_action_shopping_cart" />
 </FrameLayout>

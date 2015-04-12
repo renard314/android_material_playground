@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2015. Renard Wellnitz. This work is licensed under the Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License. To view a copy of this license, visit http://creativecommons.org/licenses/by-nc-nd/4.0/.
+ */
+
 package codingpractice.renard314.com.products.network;
 
 import android.content.Context;
@@ -13,8 +17,8 @@ import com.android.volley.toolbox.Volley;
 public class VolleySingleton {
 
     private static VolleySingleton mInstance;
-    private RequestQueue mRequestQueue;
     private static Context mCtx;
+    private RequestQueue mRequestQueue;
 
     private VolleySingleton(Context context) {
         mCtx = context;

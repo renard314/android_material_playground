@@ -10,6 +10,18 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * Created by renard on 11/04/15.
  */
 public final class Img implements Parcelable {
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<Img> CREATOR = new Parcelable.Creator<Img>() {
+        @Override
+        public Img createFromParcel(Parcel in) {
+            return new Img(in);
+        }
+
+        @Override
+        public Img[] newArray(int size) {
+            return new Img[size];
+        }
+    };
     public final long h;
     public final String name;
     public final long w;
@@ -42,17 +54,4 @@ public final class Img implements Parcelable {
         dest.writeLong(w);
         dest.writeLong(position);
     }
-
-    @SuppressWarnings("unused")
-    public static final Parcelable.Creator<Img> CREATOR = new Parcelable.Creator<Img>() {
-        @Override
-        public Img createFromParcel(Parcel in) {
-            return new Img(in);
-        }
-
-        @Override
-        public Img[] newArray(int size) {
-            return new Img[size];
-        }
-    };
 }

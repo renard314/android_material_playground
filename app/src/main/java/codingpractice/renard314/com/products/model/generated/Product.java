@@ -10,6 +10,18 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * Created by renard on 11/04/15.
  */
 public final class Product implements Parcelable {
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<Product> CREATOR = new Parcelable.Creator<Product>() {
+        @Override
+        public Product createFromParcel(Parcel in) {
+            return new Product(in);
+        }
+
+        @Override
+        public Product[] newArray(int size) {
+            return new Product[size];
+        }
+    };
     public final Attributes attributes;
     public final int[] categories;
     public final String desc;
@@ -25,6 +37,7 @@ public final class Product implements Parcelable {
     public final String sku;
     public final String title;
     public final int[] types;
+
 
     @JsonCreator
     public Product(@JsonProperty("attributes") Attributes attributes, @JsonProperty("categories") int[] categories, @JsonProperty("desc") String desc, @JsonProperty("details") Details details, @JsonProperty("filters") Filters filters, @JsonProperty("id") long id, @JsonProperty("images") Image[] images, @JsonProperty("img") Img img, @JsonProperty("inventory") Inventory inventory, @JsonProperty("measure") Measure measure, @JsonProperty("pricing") Pricing pricing, @JsonProperty("promotions") Promotion[] promotions, @JsonProperty("sku") String sku, @JsonProperty("title") String title, @JsonProperty("types") int[] types) {
@@ -44,7 +57,6 @@ public final class Product implements Parcelable {
         this.title = title;
         this.types = types;
     }
-
 
     protected Product(Parcel in) {
         attributes = null;
@@ -85,17 +97,4 @@ public final class Product implements Parcelable {
         dest.writeString(sku);
         dest.writeString(title);
     }
-
-    @SuppressWarnings("unused")
-    public static final Parcelable.Creator<Product> CREATOR = new Parcelable.Creator<Product>() {
-        @Override
-        public Product createFromParcel(Parcel in) {
-            return new Product(in);
-        }
-
-        @Override
-        public Product[] newArray(int size) {
-            return new Product[size];
-        }
-    };
 }

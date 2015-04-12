@@ -10,6 +10,18 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * Created by renard on 11/04/15.
  */
 public final class Pricing implements Parcelable {
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<Pricing> CREATOR = new Parcelable.Creator<Pricing>() {
+        @Override
+        public Pricing createFromParcel(Parcel in) {
+            return new Pricing(in);
+        }
+
+        @Override
+        public Pricing[] newArray(int size) {
+            return new Pricing[size];
+        }
+    };
     public final long price;
     public final long promo_price;
     public final String savings_text;
@@ -42,17 +54,4 @@ public final class Pricing implements Parcelable {
         dest.writeString(savings_text);
         dest.writeLong(on_sale);
     }
-
-    @SuppressWarnings("unused")
-    public static final Parcelable.Creator<Pricing> CREATOR = new Parcelable.Creator<Pricing>() {
-        @Override
-        public Pricing createFromParcel(Parcel in) {
-            return new Pricing(in);
-        }
-
-        @Override
-        public Pricing[] newArray(int size) {
-            return new Pricing[size];
-        }
-    };
 }

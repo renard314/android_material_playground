@@ -1,21 +1,21 @@
+/*
+ * Copyright (c) 2015. Renard Wellnitz. This work is licensed under the Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License. To view a copy of this license, visit http://creativecommons.org/licenses/by-nc-nd/4.0/.
+ */
+
 package codingpractice.renard314.com.products.ui;
 
 import android.annotation.SuppressLint;
-import android.app.Fragment;
-import android.content.res.TypedArray;
-import android.graphics.Color;
+import android.app.DialogFragment;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.util.Pair;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,27 +24,30 @@ import com.github.ksoichiro.android.observablescrollview.ObservableScrollView;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
 import com.github.ksoichiro.android.observablescrollview.ScrollState;
 import com.github.ksoichiro.android.observablescrollview.ScrollUtils;
+import com.nineoldandroids.animation.ArgbEvaluator;
 import com.nineoldandroids.view.ViewHelper;
 import com.nineoldandroids.view.ViewPropertyAnimator;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.RequestCreator;
 
 import java.text.NumberFormat;
 import java.util.Locale;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import codingpractice.renard314.com.products.ProductGridAdapter;
 import codingpractice.renard314.com.products.R;
 import codingpractice.renard314.com.products.model.generated.Image;
 import codingpractice.renard314.com.products.model.generated.Product;
-import uk.co.senab.photoview.PhotoViewAttacher;
+import codingpractice.renard314.com.products.ui.util.PaletteExtractor;
 
 
 /**
  * Created by renard on 11/04/15.
  * Shows the details of a single product.
  */
-public class ProductDetailFragment extends Fragment implements ObservableScrollViewCallbacks {
+public class ProductDetailFragment extends DialogFragment implements ObservableScrollViewCallbacks {
 
     final static String TAG = ProductDetailFragment.class.getSimpleName();
     private static final String ARG_PRODUCT = "arg_product";
@@ -69,7 +72,6 @@ public class ProductDetailFragment extends Fragment implements ObservableScrollV
     TextView mPriceView;
 
 
-
     @InjectView(R.id.description_text_view)
     TextView mDescriptionTextView;
 
@@ -82,7 +84,15 @@ public class ProductDetailFragment extends Fragment implements ObservableScrollV
     private int mFabMargin;
     private int mToolbarColor;
     private boolean mFabIsShown;
+    private Integer mBackGroundColor;
 
+    public static ProductDetailFragment newInstance(Product product) {
+        final ProductDetailFragment productDetailFragment = new ProductDetailFragment();
+        Bundle args = new Bundle();
+        args.putParcelable(ARG_PRODUCT, product);
+        productDetailFragment.setArguments(args);
+        return productDetailFragment;
+    }
 
     private int getActionBarSize() {
         return (int) getResources().getDimension(R.dimen.actionBarSize);
@@ -97,14 +107,14 @@ public class ProductDetailFragment extends Fragment implements ObservableScrollV
         activity.setSupportActionBar(mToolbar);
         activity.getSupportActionBar().setHomeButtonEnabled(true);
         activity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        ViewCompat.setElevation(mToolbar,4f);
+        ViewCompat.setElevation(mToolbar, 4f);
 
         final Product product = getArguments().getParcelable(ARG_PRODUCT);
 
         mFlexibleSpaceImageHeight = getResources().getDimensionPixelSize(R.dimen.flexible_space_image_height);
         mFlexibleSpaceShowFabOffset = getResources().getDimensionPixelSize(R.dimen.flexible_space_show_fab_offset);
         mActionBarSize = getActionBarSize();
-        mToolbarColor = getResources().getColor(R.color.colorPrimary);
+        mToolbarColor = getResources().getColor(R.color.colorAccent);
 
         mToolbar.setTitle(null);
         mScrollView.setScrollViewCallbacks(this);
@@ -122,6 +132,9 @@ public class ProductDetailFragment extends Fragment implements ObservableScrollV
                 Toast.makeText(getActivity(), "Item added to cart.", Toast.LENGTH_SHORT).show();
             }
         });
+        mBackGroundColor = getResources().getColor(R.color.colorAccent);
+        //workaround for library bug
+        mFab.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
         mFabMargin = getResources().getDimensionPixelSize(R.dimen.margin_standard);
         ViewHelper.setScaleX(mFab, 0);
         ViewHelper.setScaleY(mFab, 0);
@@ -137,10 +150,10 @@ public class ProductDetailFragment extends Fragment implements ObservableScrollV
             }
         });
 
-        startLoadingImage(mImageView, product.img.name);
+        startLoadingImage(mImageView, product.img.name, true);
         String secondaryImage = findSecondaryImageThatIsDifferentToMainImage(product);
-        if(secondaryImage!=null) {
-            startLoadingImage(mSecondImageView, secondaryImage);
+        if (secondaryImage != null) {
+            startLoadingImage(mSecondImageView, secondaryImage, false);
         } else {
             mSecondImageView.setVisibility(View.GONE);
         }
@@ -149,8 +162,8 @@ public class ProductDetailFragment extends Fragment implements ObservableScrollV
 
     @Nullable
     private String findSecondaryImageThatIsDifferentToMainImage(Product product) {
-        for(Image second : product.images){
-            if(second.position!=product.img.position) {
+        for (Image second : product.images) {
+            if (second.position != product.img.position) {
                 return second.name;
             }
         }
@@ -158,7 +171,7 @@ public class ProductDetailFragment extends Fragment implements ObservableScrollV
         return null;
     }
 
-    private void startLoadingImage(final ImageView imageView, final String name) {
+    private void startLoadingImage(final ImageView imageView, final String name, final boolean extractColor) {
 
         imageView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
 
@@ -169,7 +182,7 @@ public class ProductDetailFragment extends Fragment implements ObservableScrollV
                 final int width = imageView.getWidth();
                 final int height = imageView.getHeight();
 
-                loadImage(width, height, imageView, name);
+                loadImage(width, height, imageView, name, extractColor);
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                     imageView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
@@ -181,32 +194,44 @@ public class ProductDetailFragment extends Fragment implements ObservableScrollV
 
     }
 
-    private void loadImage(int width, int height, final ImageView imageView, String name) {
+    private void loadImage(int width, int height, final ImageView imageView, final String name, boolean extractColor) {
+        Callback callbacks = null;
+        final RequestCreator creator = Picasso.with(getActivity().getApplicationContext())
+                .load("http://media.redmart.com/newmedia/200p" + name);
 
-        Callback callbacks = new Callback() {
-            @Override
-            public void onSuccess() {
-            }
+        if (extractColor) {
+            final Pair<Integer, Integer> colors = ProductGridAdapter.mColorCache.get(name);
+            if (colors != null) {
+                applyColors(colors);
 
-            @Override
-            public void onError() {
-                Toast.makeText(getActivity(),"ERROR loading image",Toast.LENGTH_LONG).show();
+            } else {
+                creator.transform(new PaletteExtractor(name, ProductGridAdapter.mColorCache));
+                callbacks = new Callback() {
+                    @Override
+                    public void onSuccess() {
+                        final Pair<Integer, Integer> colors = ProductGridAdapter.mColorCache.get(name);
+                        applyColors(colors);
+                    }
+
+                    @Override
+                    public void onError() {
+                    }
+                };
             }
-        };
-        Picasso.with(getActivity().getApplicationContext())
-                .load("http://media.redmart.com/newmedia/200p" + name)
-                .resize(width, height)
+        }
+        creator.resize(width, height)
                 .centerInside()
                 .into(imageView, callbacks);
     }
 
-
-    public static ProductDetailFragment newInstance(Product product) {
-        final ProductDetailFragment productDetailFragment = new ProductDetailFragment();
-        Bundle args = new Bundle();
-        args.putParcelable(ARG_PRODUCT, product);
-        productDetailFragment.setArguments(args);
-        return productDetailFragment;
+    private void applyColors(Pair<Integer, Integer> colors) {
+        if (colors != null) {
+            mBackGroundColor = colors.first;
+            mToolbar.setBackgroundColor(colors.first);
+            mTitleView.setTextColor(colors.second);
+            mMeasureView.setTextColor(colors.second);
+            mOverlayView.setBackgroundColor(colors.first);
+        }
     }
 
     @Override
@@ -218,7 +243,14 @@ public class ProductDetailFragment extends Fragment implements ObservableScrollV
         ViewHelper.setTranslationY(mImageView, ScrollUtils.getFloat(-scrollY / 2, minOverlayTransitionY, 0));
 
         // Change alpha of overlay
-        ViewHelper.setAlpha(mOverlayView, ScrollUtils.getFloat((float) scrollY / flexibleRange, 0, 1));
+        final float fraction = ScrollUtils.getFloat((float) scrollY / flexibleRange, 0, 1);
+        ViewHelper.setAlpha(mOverlayView, fraction);
+        ArgbEvaluator a = new ArgbEvaluator();
+        final int toColor = getResources().getColor(R.color.colorPrimary);
+
+        final int animatedColor = (int) a.evaluate(fraction, mBackGroundColor, toColor);
+        mOverlayView.setBackgroundColor(animatedColor);
+        mToolbar.setBackgroundColor(animatedColor);
 
         // Scale title text
         /*
@@ -235,9 +267,8 @@ public class ProductDetailFragment extends Fragment implements ObservableScrollV
         ViewHelper.setTranslationY(mToolbar, titleTranslationY);
 
         // Translate FAB
-        int maxFabTranslationY = mFlexibleSpaceImageHeight - mFab.getHeight() / 2;
-        float fabTranslationY = ScrollUtils.getFloat(
-                -scrollY + mFlexibleSpaceImageHeight - mFab.getHeight() / 2,
+        int maxFabTranslationY = mFlexibleSpaceImageHeight + mActionBarSize - mFab.getHeight() / 2;
+        float fabTranslationY = ScrollUtils.getFloat(-scrollY + mFlexibleSpaceImageHeight + mActionBarSize - mFab.getHeight() / 2,
                 mActionBarSize - mFab.getHeight() / 2,
                 maxFabTranslationY);
         //ViewHelper.setTranslationX(mFab, mOverlayView.getWidth()  -mFabMargin - mFab.getWidth());

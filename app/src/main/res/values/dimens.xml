@@ -12,6 +12,7 @@
     <dimen name="toolbar_elevation">4dp</dimen>
     <dimen name="tab_height">48dp</dimen>
     <dimen name="actionBarSize">68dp</dimen>
+    <bool name="show_details_as_dialog">false</bool>
 
     <integer name="product_grid_column_num">2</integer>
 </resources>

@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <integer name="product_grid_column_num">4</integer>
+    <bool name="show_details_as_dialog">true</bool>
 </resources>

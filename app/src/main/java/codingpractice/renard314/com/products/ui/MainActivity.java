@@ -1,6 +1,12 @@
+/*
+ * Copyright (c) 2015. Renard Wellnitz. This work is licensed under the Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License. To view a copy of this license, visit http://creativecommons.org/licenses/by-nc-nd/4.0/.
+ */
+
 package codingpractice.renard314.com.products.ui;
 
 import android.app.Activity;
+import android.app.Dialog;
+import android.app.DialogFragment;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
@@ -19,54 +25,17 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import codingpractice.renard314.com.products.network.JacksonRequest;
 import codingpractice.renard314.com.products.R;
-import codingpractice.renard314.com.products.network.VolleySingleton;
 import codingpractice.renard314.com.products.model.generated.Product;
 import codingpractice.renard314.com.products.model.generated.ProductsResponse;
+import codingpractice.renard314.com.products.network.JacksonRequest;
+import codingpractice.renard314.com.products.network.VolleySingleton;
 import de.greenrobot.event.EventBus;
 
 
 public class MainActivity extends ActionBarActivity {
 
     private static final String TAG = RetainFragment.class.getSimpleName();
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        findOrCreateRetainFragment(getFragmentManager());
-
-        if (savedInstanceState == null) {
-            final ProductGridFragment productGridFragment = ProductGridFragment.newInstance();
-
-            android.app.FragmentManager fm = getFragmentManager();
-            fm.beginTransaction()
-                    .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
-                    .add(R.id.fragment_container, productGridFragment, ProductGridFragment.TAG)
-                    .commit();
-        }
-    }
-
-    @Override
-    public boolean onSupportNavigateUp() {
-        if (getFragmentManager().getBackStackEntryCount() == 0) {
-            this.finish();
-            return true;
-        } else {
-            getFragmentManager().popBackStack();
-        }
-        return false;
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (getFragmentManager().getBackStackEntryCount() == 0) {
-            this.finish();
-        } else {
-            getFragmentManager().popBackStack();
-        }
-    }
 
     /**
      * Locate an existing instance of this Fragment or if not found, create and
@@ -91,6 +60,43 @@ public class MainActivity extends ActionBarActivity {
 
     }
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        findOrCreateRetainFragment(getFragmentManager());
+
+        if (savedInstanceState == null) {
+            final ProductGridFragment productGridFragment = ProductGridFragment.newInstance();
+
+            android.app.FragmentManager fm = getFragmentManager();
+            fm.beginTransaction()
+                    .replace(R.id.fragment_container, productGridFragment, ProductGridFragment.TAG)
+                    .commit();
+        }
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        if (getFragmentManager().getBackStackEntryCount() > 0) {
+            getFragmentManager().popBackStack();
+        }
+        final DialogFragment fragmentByTag = (DialogFragment) getFragmentManager().findFragmentByTag(ProductDetailFragment.TAG);
+        if(fragmentByTag!=null){
+            fragmentByTag.dismiss();
+        }
+        return false;
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (getFragmentManager().getBackStackEntryCount() == 0) {
+            this.finish();
+        } else {
+            getFragmentManager().popBackStack();
+        }
+    }
+
     public Set<Product> getProducts() {
         return findOrCreateRetainFragment(getFragmentManager()).mProducts;
     }
@@ -101,12 +107,12 @@ public class MainActivity extends ActionBarActivity {
      * Depending on how often the data changes production code should make use of a content provider to persist the loaded products.
      */
     public static class RetainFragment extends Fragment implements Response.Listener<ProductsResponse>, Response.ErrorListener {
-        private Set<Product> mProducts = new LinkedHashSet<>();
-        private long mTotalNumberOfProducts = 0;
-        private final Uri mBaseUri = new Uri.Builder().scheme("https").authority("api.redmart.com").path("v1.5.1/products/new").build();
         private final static String QUERY_PAGE = "page";
         private final static String QUERY_PAGE_SIZE = "pageSize";
         private final static String QUERY_INSTOCK = "instock";
+        private final Uri mBaseUri = new Uri.Builder().scheme("https").authority("api.redmart.com").path("v1.5.1/products/new").build();
+        private Set<Product> mProducts = new LinkedHashSet<>();
+        private long mTotalNumberOfProducts = 0;
 
         /**
          * Empty constructor as per the Fragment documentation

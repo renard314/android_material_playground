@@ -10,6 +10,18 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * Created by renard on 11/04/15.
  */
 public final class Details implements Parcelable {
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<Details> CREATOR = new Parcelable.Creator<Details>() {
+        @Override
+        public Details createFromParcel(Parcel in) {
+            return new Details(in);
+        }
+
+        @Override
+        public Details[] newArray(int size) {
+            return new Details[size];
+        }
+    };
     public final long prod_type;
     public final String uri;
     public final long status;
@@ -46,17 +58,4 @@ public final class Details implements Parcelable {
         dest.writeLong(is_new);
         dest.writeString(storage_class);
     }
-
-    @SuppressWarnings("unused")
-    public static final Parcelable.Creator<Details> CREATOR = new Parcelable.Creator<Details>() {
-        @Override
-        public Details createFromParcel(Parcel in) {
-            return new Details(in);
-        }
-
-        @Override
-        public Details[] newArray(int size) {
-            return new Details[size];
-        }
-    };
 }

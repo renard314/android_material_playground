@@ -13,7 +13,7 @@ public final class ProductsResponse {
     public final Filters filters;
 
     @JsonCreator
-    public ProductsResponse(@JsonProperty("total") long total, @JsonProperty("page_size") long page_size, @JsonProperty("session") String session, @JsonProperty("page") long page, @JsonProperty("status") Status status, @JsonProperty("products") Product[] products, @JsonProperty("filters") Filters filters){
+    public ProductsResponse(@JsonProperty("total") long total, @JsonProperty("page_size") long page_size, @JsonProperty("session") String session, @JsonProperty("page") long page, @JsonProperty("status") Status status, @JsonProperty("products") Product[] products, @JsonProperty("filters") Filters filters) {
         this.total = total;
         this.page_size = page_size;
         this.session = session;
@@ -28,7 +28,7 @@ public final class ProductsResponse {
         public final long code;
 
         @JsonCreator
-        public Status(@JsonProperty("msg") String msg, @JsonProperty("code") long code){
+        public Status(@JsonProperty("msg") String msg, @JsonProperty("code") long code) {
             this.msg = msg;
             this.code = code;
         }
@@ -39,7 +39,7 @@ public final class ProductsResponse {
         public final Toggle toggles[];
 
         @JsonCreator
-        public Filters(@JsonProperty("options") Option[] options, @JsonProperty("toggles") Toggle[] toggles){
+        public Filters(@JsonProperty("options") Option[] options, @JsonProperty("toggles") Toggle[] toggles) {
             this.options = options;
             this.toggles = toggles;
         }
@@ -50,7 +50,7 @@ public final class ProductsResponse {
             public final Type types[];
 
             @JsonCreator
-            public Option(@JsonProperty("name") String name, @JsonProperty("uri") String uri, @JsonProperty("types") Type[] types){
+            public Option(@JsonProperty("name") String name, @JsonProperty("uri") String uri, @JsonProperty("types") Type[] types) {
                 this.name = name;
                 this.uri = uri;
                 this.types = types;
@@ -62,7 +62,7 @@ public final class ProductsResponse {
                 public final long count;
 
                 @JsonCreator
-                public Type(@JsonProperty("uri") String uri, @JsonProperty("name") String name, @JsonProperty("count") long count){
+                public Type(@JsonProperty("uri") String uri, @JsonProperty("name") String name, @JsonProperty("count") long count) {
                     this.uri = uri;
                     this.name = name;
                     this.count = count;
@@ -75,7 +75,7 @@ public final class ProductsResponse {
             public final String uri;
 
             @JsonCreator
-            public Toggle(@JsonProperty("name") String name, @JsonProperty(value="uri", required=false) String uri){
+            public Toggle(@JsonProperty("name") String name, @JsonProperty(value = "uri", required = false) String uri) {
                 this.name = name;
                 this.uri = uri;
             }
