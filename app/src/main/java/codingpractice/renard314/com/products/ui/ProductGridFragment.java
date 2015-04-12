@@ -44,6 +44,7 @@ public class ProductGridFragment extends Fragment implements AdapterView.OnItemC
     @InjectView(R.id.logo_image_view)
     ImageView mLogoView;
     private ProductGridAdapter mAdapter;
+    private AnimatorSet mAnimatorSet;
 
     public static ProductGridFragment newInstance() {
         return new ProductGridFragment();
@@ -71,8 +72,11 @@ public class ProductGridFragment extends Fragment implements AdapterView.OnItemC
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        ButterKnife.reset(this);
         EventBus.getDefault().unregister(this);
+        if(mAnimatorSet!=null){
+            mAnimatorSet.cancel();
+        }
+        ButterKnife.reset(this);
     }
 
 
@@ -112,6 +116,7 @@ public class ProductGridFragment extends Fragment implements AdapterView.OnItemC
 
     }
 
+
     private void startRemoveLogoAnimation() {
         final ObjectAnimator backgroundColor = ObjectAnimator.ofFloat(mEmptyView, "alpha", 0);
         ObjectAnimator slideOut = ObjectAnimator.ofFloat(mLogoView, "y", -mLogoView.getHeight());
@@ -119,10 +124,10 @@ public class ProductGridFragment extends Fragment implements AdapterView.OnItemC
         backgroundColor.setDuration(200);
 
         slideOut.setInterpolator(new AccelerateInterpolator());
-        AnimatorSet set = new AnimatorSet();
-        set.playSequentially(slideOut, backgroundColor);
-        set.start();
-        set.addListener(new Animator.AnimatorListener() {
+        mAnimatorSet = new AnimatorSet();
+        mAnimatorSet.playSequentially(slideOut, backgroundColor);
+        mAnimatorSet.start();
+        mAnimatorSet.addListener(new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animation) {
 
