@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2015. Renard Wellnitz. This work is licensed under the Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License. To view a copy of this license, visit http://creativecommons.org/licenses/by-nc-nd/4.0/.
+  -->
+
 <codingpractice.renard314.com.products.ui.ProductLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -18,6 +22,7 @@
             android:layout_width="match_parent"
             android:layout_above="@+id/price_text_view"
             android:layout_height="wrap_content" />
+
         <TextView
             tools:text="$10.00"
             android:paddingLeft="@dimen/margin_standard"
@@ -27,6 +32,7 @@
             android:textSize="24sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
+
         <TextView
             tools:text="740ml"
             android:layout_alignBaseline="@+id/price_text_view"
