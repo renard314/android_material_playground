@@ -5,7 +5,6 @@
 package codingpractice.renard314.com.products.ui;
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.Fragment;
 import android.app.FragmentManager;
@@ -82,7 +81,7 @@ public class MainActivity extends ActionBarActivity {
             getFragmentManager().popBackStack();
         }
         final DialogFragment fragmentByTag = (DialogFragment) getFragmentManager().findFragmentByTag(ProductDetailFragment.TAG);
-        if(fragmentByTag!=null){
+        if (fragmentByTag != null) {
             fragmentByTag.dismiss();
         }
         return false;

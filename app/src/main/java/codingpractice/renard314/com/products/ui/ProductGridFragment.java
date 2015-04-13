@@ -56,7 +56,7 @@ public class ProductGridFragment extends Fragment implements AdapterView.OnItemC
         Product product = (Product) mAdapter.getItem(i);
         ProductDetailFragment productDetailFragment = ProductDetailFragment.newInstance(product);
         final boolean showAsDialog = getActivity().getResources().getBoolean(R.bool.show_details_as_dialog);
-        if(showAsDialog){
+        if (showAsDialog) {
             productDetailFragment.setStyle(DialogFragment.STYLE_NO_TITLE, 0);
             productDetailFragment.show(fm, ProductDetailFragment.TAG);
         } else {
@@ -73,7 +73,7 @@ public class ProductGridFragment extends Fragment implements AdapterView.OnItemC
     public void onDestroyView() {
         super.onDestroyView();
         EventBus.getDefault().unregister(this);
-        if(mAnimatorSet!=null){
+        if (mAnimatorSet != null) {
             mAnimatorSet.cancel();
         }
         ButterKnife.reset(this);
@@ -85,8 +85,6 @@ public class ProductGridFragment extends Fragment implements AdapterView.OnItemC
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View layout = inflater.inflate(R.layout.fragment_products, container, false);
         ButterKnife.inject(this, layout);
-        mGridView = (GridView) layout.findViewById(R.id.products_grid_view);
-        mEmptyView = layout.findViewById(R.id.empty_view);
         MainActivity activity = (MainActivity) getActivity();
         Collection<Product> products = activity.getProducts();
         if (products.isEmpty()) {

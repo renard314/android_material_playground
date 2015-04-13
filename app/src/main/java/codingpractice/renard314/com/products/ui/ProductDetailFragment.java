@@ -70,19 +70,15 @@ public class ProductDetailFragment extends DialogFragment implements ObservableS
     TextView mMeasureView;
     @InjectView(R.id.price_text_view)
     TextView mPriceView;
-
-
     @InjectView(R.id.description_text_view)
     TextView mDescriptionTextView;
-
-
     @InjectView(R.id.fab)
     View mFab;
+
+
     private int mActionBarSize;
     private int mFlexibleSpaceShowFabOffset;
     private int mFlexibleSpaceImageHeight;
-    private int mFabMargin;
-    private int mToolbarColor;
     private boolean mFabIsShown;
     private Integer mBackGroundColor;
 
@@ -114,8 +110,6 @@ public class ProductDetailFragment extends DialogFragment implements ObservableS
         mFlexibleSpaceImageHeight = getResources().getDimensionPixelSize(R.dimen.flexible_space_image_height);
         mFlexibleSpaceShowFabOffset = getResources().getDimensionPixelSize(R.dimen.flexible_space_show_fab_offset);
         mActionBarSize = getActionBarSize();
-        mToolbarColor = getResources().getColor(R.color.colorAccent);
-
         mToolbar.setTitle(null);
         mScrollView.setScrollViewCallbacks(this);
         mTitleView.setText(product.title);
@@ -135,7 +129,6 @@ public class ProductDetailFragment extends DialogFragment implements ObservableS
         mBackGroundColor = getResources().getColor(R.color.colorAccent);
         //workaround for library bug
         mFab.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-        mFabMargin = getResources().getDimensionPixelSize(R.dimen.margin_standard);
         ViewHelper.setScaleX(mFab, 0);
         ViewHelper.setScaleY(mFab, 0);
 
@@ -171,6 +164,7 @@ public class ProductDetailFragment extends DialogFragment implements ObservableS
         return null;
     }
 
+    //TODO remove code duplication (see ProductGridAdapter)
     private void startLoadingImage(final ImageView imageView, final String name, final boolean extractColor) {
 
         imageView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
