@@ -61,7 +61,8 @@ public final class Product implements Parcelable {
     protected Product(Parcel in) {
         attributes = null;
         categories = null;
-        images = (Image[]) in.readArray(Image.class.getClassLoader());
+
+        images = in.createTypedArray(Image.CREATOR);
         promotions = null;
         types = in.createIntArray();
 
@@ -84,7 +85,7 @@ public final class Product implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeArray(images);
+        dest.writeTypedArray(images,flags);
         dest.writeIntArray(types);
         dest.writeString(desc);
         dest.writeValue(details);
